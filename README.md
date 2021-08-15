@@ -27,16 +27,16 @@ updater: http://localhost:8899/swagger-ui.html
 \- UPDATE /v1/api/perferences/userId/{userId} => create/update userId's perferences. About request body, not put sms into body if customer is not interesed in this way. the field of name is using to replace template's bracket, could be 'Dear valued' or title come with customer's name. more detail as following.<br>
 \- DELETE /v1/api/perferences/userId/{userId} => delete userId' perferences, userId might not be customer anymore. Database will not clean record, only update deleted flag as true to identify it is non-existed customer. retrieve-api will only retrieve perference with deleted=false.<img width="984" alt="image" src="https://user-images.githubusercontent.com/23376300/129463856-ebdb9539-4e02-4a42-8789-53382a0ab08c.png">
 
-# Check databases data
-- How to check if table is existed? If postgresdb is empty, and spring boot will initalize table by defined DAO.<br>
+# Check database/table data
+\- How to check if table is existed? If postgresdb is empty, and spring boot will initalize table by defined DAO.
 ```
 docker exec -it postgresql bash -c "export PGPASSWORD='root'; psql -h postgresql -U root -d tgt_db -c '\d'"
 ```
-- Check perference table's schema<br>
+\- Check perference table's schema
 ```
 docker exec -it postgresql bash -c "export PGPASSWORD='root'; psql -h postgresql -U root -d tgt_db -c '\d perference;'"
 ```
-- How to check what data there are in postgresdb?<br>
+\- How to check what data there are in postgresdb?
 ```
 docker exec -it postgresql bash -c "export PGPASSWORD='root'; psql -h postgresql -U root -d tgt_db -c 'select * from perference;'"
 ```
