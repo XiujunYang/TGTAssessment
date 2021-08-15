@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
         allowGetters = true
 )
 public class MarketingPerferenceDAO implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -3341072078713175860L;
 	@Id @Column(name = "user_id") private String userId;
 	private String name; // customer's title or full name, could be using in pattern in following each perference.
 	private String post;
