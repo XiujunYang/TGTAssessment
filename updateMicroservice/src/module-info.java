@@ -1,2 +1,2 @@
-module TGAssessment {
+module updateMicroservice {
 }
