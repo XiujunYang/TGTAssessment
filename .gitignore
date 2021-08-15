@@ -1,0 +1,25 @@
+.DS_Store
+*.swp
+*/bin/
+bin/
+*/build/
+build/
+
+.settings/
+.classpath
+*.class
+*.jar
+
+# Eclipse files
+.project
+.metadata/
+
+# ingore logs
+*/logs/
+logs/
+*-logs/
+*.log
+
+# ignore database data
+pg_data/
+postgresql-Snippets/

@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: perference-retrieve-deployment
+  labels:
+    app: perference-retrieve-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: perference-retrieve-deployment
+  template:
+    metadata:
+      labels:
+        app: perference-retrieve-deployment
+    spec:
+      containers:
+      - name: perference-retrieve-deployment
+        image: {RESPOTORY}/perference-retrieve-api:{TAG_VERSION}
+        env:
+          - name: SPRING_DATASOURCE_URL
+            value: "jdbc:postgresql://{POSTGRESQL_IP}:{POSTGRESQL_PORT}/{POSTGRESQL_DB}"
+          - name: SPRING_DATASOURCE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: tgt-db-secret
+                key: db_username
+          - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+              secretKeyRef:
+                name: tgt-db-secret
+                key: db_password
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 250m
+            memory: 512Mi
+          requests:
+            cpu: 500m
+            memory: 1024Mi
+        ports:
+        - containerPort: 8898
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: perference-retrieve-service
+  labels:
+    app: perference-retrieve-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8898
+    targetPort: 8898
+    protocol: TCP
+    name: retrieve-service
+  selector:
+    app: perference-retrieve-deployment
+
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: perference-retrieve-ingress
+  labels:
+    app: perference-retrieve-ingress
+spec:
+  rules:
+  - host: {HOST_NAME}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: perference-retrieve-service
+          servicePort: 8898

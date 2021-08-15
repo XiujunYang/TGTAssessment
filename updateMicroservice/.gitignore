@@ -1,0 +1,17 @@
+.DS_Store
+*.swp
+bin/
+build/
+
+.settings/
+.classpath
+*.class
+*.jar
+
+# Eclipse files
+.project
+.metadata/
+
+# ingore logs
+logs/
+*.log

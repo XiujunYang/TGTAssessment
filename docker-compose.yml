@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  postgresdb:
+    container_name: postgresql
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: tgt_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgresql-Snippets/infile:/infile
+      - ./pg_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+  retrieve_api:
+    build: 
+      context: ./retrieveMicroservice
+    container_name: perference_retrieve_api
+    image: perference-retrieve-api:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:5432/tgt_db
+    ports:
+      - "8898:8898"
+    volumes:
+      - ./retrieve-logs:/home/workspaces/logs
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+  update_api:
+    build: 
+      context: ./updateMicroservice
+    container_name: perference_update_api
+    image: perference-update-api:latest
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:5432/tgt_db
+    ports:
+      - "8899:8899"
+    volumes:
+      - ./update-logs:/home/workspaces/logs
+    depends_on:
+      postgresdb:
+        condition: service_healthy

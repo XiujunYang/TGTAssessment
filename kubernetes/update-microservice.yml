@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: perference-update-deployment
+  labels:
+    app: perference-update-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: perference-update-deployment
+  template:
+    metadata:
+      labels:
+        app: perference-update-deployment
+    spec:
+      containers:
+      - name: perference-update-deployment
+        image: {RESPOTORY}/perference-update-api:{TAG_VERSION}
+        env:
+          - name: SPRING_DATASOURCE_URL
+            value: "jdbc:postgresql://{POSTGRESQL_IP}:{POSTGRESQL_PORT}/{POSTGRESQL_DB}"
+          - name: SPRING_DATASOURCE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: tgt-db-secret
+                key: db_username
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: tgt-db-secret
+                key: db_password
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 250m
+            memory: 512Mi
+          requests:
+            cpu: 500m
+            memory: 1024Mi
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8899
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: perference-update-service
+  labels:
+    app: perference-update-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8899
+    targetPort: 8899
+    protocol: TCP
+    name: update-service
+  selector:
+    app: perference-update-deployment
+
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: perference-update-ingress
+  labels:
+    app: perference-update-ingress
+spec:
+  rules:
+  - host: {HOST_NAME}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: perference-update-service
+          servicePort: 8899
