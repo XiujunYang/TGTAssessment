@@ -19,9 +19,13 @@ retriever: http://localhost:8898/swagger-ui.html<br>
 updater: http://localhost:8899/swagger-ui.html
 
 # API endpoint
-<img width="984" alt="image" src="https://user-images.githubusercontent.com/23376300/129463860-57b49ad2-7bd6-440b-8f29-7ac962b76cdd.png">
-<img width="984" alt="image" src="https://user-images.githubusercontent.com/23376300/129463856-ebdb9539-4e02-4a42-8789-53382a0ab08c.png">
-
+- retrieve microservice:<br>
+\- GET /v1/api/heartbeat => healthcheck for monitoring.<br>
+\- GET /v1/api/perferences/userId/{userId} => retrieve userId/customerId's perferences, for eample what email pattern/template they prefered, like ```'Good morning, [name]. I am pleasure to share a infomration for you. [content] <img width="100" height="50" src=[log.img]<br><br> Your sincerely, TG techology'``` with html and css, all bracket could be replace to customerized content by email seneder service. Response only reply customer is interested, no sms meant they are not prefered, more detail data struture  as floowing:<img width="984" alt="image" src="https://user-images.githubusercontent.com/23376300/129463860-57b49ad2-7bd6-440b-8f29-7ac962b76cdd.png"><br>
+- update microservice:<br>
+\- GET /v1/api/heartbeat => healthcheck for monitoring.<br>
+\- UPDATE /v1/api/perferences/userId/{userId} => create/update userId's perferences. About request body, not put sms into body if customer is not interesed in this way. the field of name is using to replace template's bracket, could be 'Dear valued' or title come with customer's name. more detail as following.<br>
+\- DELETE /v1/api/perferences/userId/{userId} => delete userId' perferences, userId might not be customer anymore. Database will not clean record, only update deleted flag as true to identify it is non-existed customer. retrieve-api will only retrieve perference with deleted=false.<img width="984" alt="image" src="https://user-images.githubusercontent.com/23376300/129463856-ebdb9539-4e02-4a42-8789-53382a0ab08c.png">
 
 # Check databases data
 - How to check if table is existed? If postgresdb is empty, and spring boot will initalize table by defined DAO.<br>
